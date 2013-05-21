@@ -5,13 +5,13 @@
 REGISTER $PIGNLPROC_JAR
 
 -- Load wikipedia, instance types and redirects from dbpedia dumps
-wikipedia_links = LOAD '$INPUT/wikipedia_links_$LANG.nt'
+wikipedia_links = LOAD '$INPUT_LINKS/wikipedia_links_$LANG.nt'
   USING pignlproc.storage.UriUriNTriplesLoader(
     'http://xmlns.com/foaf/0.1/primaryTopic')
   AS (wikiuri: chararray, dburi: chararray);
 
 -- redirects currently only exist for English in DBpedia (3.7)
-redirects = LOAD '$INPUT/redirects_en.nt'
+redirects = LOAD '$INPUT_LINKS/redirects_$LANG.nt'
   USING pignlproc.storage.UriUriNTriplesLoader(
     'http://dbpedia.org/ontology/wikiPageRedirects')
   AS (source: chararray, target: chararray);
@@ -27,7 +27,7 @@ redirected_wikipedia_links = FOREACH redirect_joined GENERATE
 
 -- Load dbpedia type data and filter out the overly generic owl:Thing type
 instance_types =
-  LOAD '$INPUT/instance_types_$LANG.nt'
+  LOAD '$INPUT_LINKS/instance_types_$LANG.nt'
   USING pignlproc.storage.UriUriNTriplesLoader(
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
   AS (dburi: chararray, type: chararray);

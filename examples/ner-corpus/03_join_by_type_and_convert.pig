@@ -8,11 +8,11 @@ REGISTER $PIGNLPROC_JAR
 -- use the default OpenNLP tokenizer (should work for most european languages)
 DEFINE opennlp_merge pignlproc.evaluation.MergeAsOpenNLPAnnotatedText();
 
-sentences = LOAD '$INPUT/$LANG/sentences_with_links'
+sentences = LOAD '$OUTPUT/$LANG/sentences_with_links'
   AS (title: chararray, sentenceOrder: int, linkTarget: chararray,
       linkBegin: int, linkEnd: int, sentence: chararray);
 
-wikiuri_types = LOAD '$INPUT/$LANG/wikiuri_to_types'
+wikiuri_types = LOAD '$OUTPUT/$LANG/wikiuri_to_types'
   AS (wikiuri: chararray, typeuri: chararray);
 
 -- load the type mapping from DBpedia type uri to opennlp type name
@@ -26,14 +26,24 @@ joined2 = JOIN joined_projected BY wikiuri, sentences BY linkTarget;
 result = FOREACH joined2
   GENERATE title, sentenceOrder, typename, linkBegin, linkEnd, sentence;
 
+-- DUMP result;
+
 -- Reorder and group by article title and sentence order
-ordered = ORDER result BY title ASC, sentenceOrder ASC;
-grouped = GROUP ordered BY (title, sentenceOrder);
+-- ordered = ORDER result BY title ASC, sentenceOrder ASC;
+
+-- DUMP ordered;
+
+-- grouped = GROUP ordered BY (title, sentenceOrder);
+
+grouped = GROUP result BY (title, sentenceOrder);
 
 -- Convert to the OpenNLP training format
 opennlp_corpus =
  FOREACH grouped
- GENERATE opennlp_merge(
-   ordered.sentence, ordered.linkBegin, ordered.linkEnd, ordered.typename);
+-- GENERATE opennlp_merge(
+--   ordered.sentence, ordered.linkBegin, ordered.linkEnd, ordered.typename);
+
+GENERATE opennlp_merge(
+   result.sentence, result.linkBegin, result.linkEnd, result.typename);
 
 STORE opennlp_corpus INTO '$OUTPUT/$LANG/opennlp';

@@ -8,11 +8,11 @@ REGISTER $PIGNLPROC_JAR
 -- use the default OpenNLP tokenizer (should work for most european languages)
 DEFINE merge pignlproc.evaluation.MergeAsOpenNLPAnnotatedText('$TYPE_NAME');
 
-sentences = LOAD '$INPUT/$LANG/sentences_with_links'
+sentences = LOAD '$OUTPUT/$LANG/sentences_with_links'
   AS (title: chararray, sentenceOrder: int, linkTarget: chararray,
       linkBegin: int, linkEnd: int, sentence: chararray);
 
-wikiuri_types = LOAD '$INPUT/$LANG/wikiuri_to_types'
+wikiuri_types = LOAD '$OUTPUT/$LANG/wikiuri_to_types'
   AS (wikiuri: chararray, type: chararray);
 
 filtered_types = FILTER wikiuri_types BY type == '$TYPE_URI';

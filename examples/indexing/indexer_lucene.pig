@@ -31,7 +31,7 @@ DEFINE tokens pignlproc.index.LuceneTokenizer('$STOPLIST_PATH', '$STOPLIST_NAME'
 -- Parse the wikipedia dump and extract text and links data
 parsed = LOAD '$INPUT'
   USING pignlproc.storage.ParsingWikipediaLoader('$LANG')
-  AS (title, id, pageUrl, text, redirect, links, headers, paragraphs);
+  AS  (title:chararray,id:chararray,pageUrl:chararray,text:chararray,redirect:chararray,links:bag{t:tuple(target:chararray,begin:int,end:int)},headers:bag{t:tuple(tagname:chararray,begin:int,end:int)},paragraphs:bag{t:tuple(tagname:chararray,begin:int,end:int)});
 
 
 -- filter as early as possible

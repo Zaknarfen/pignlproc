@@ -35,7 +35,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema.FieldSchema;
  */
 public class SentencesWithLink extends EvalFunc<DataBag> {
 
-    public static final String ENGLISH_SENTMODEL_PATH = "opennlp/en-sent.bin";
+    public static final String ENGLISH_SENTMODEL_PATH = "opennlp/pt-sent.bin";
 
     TupleFactory tupleFactory = TupleFactory.getInstance();
 
